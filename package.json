@@ -2,7 +2,7 @@
   "name": "loanreminder",
   "version": "1.0.0",
   "description": "Simple Loan Tracker with reminders and history",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "start": "node server/server.js",
     "server": "node server/server.js",
