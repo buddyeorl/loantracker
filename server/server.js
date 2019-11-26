@@ -15,7 +15,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 // parse application/json
 app.use(bodyParser.json())
 
-app.get('/', (req, res) => res.send('hello b1 world'));
+//app.get('/', (req, res) => res.send('hello b1 world'));
 app.get('/api/all', (req, res) => {
     console.log('getting all')
     Loan.findAll({}).then(results => res.send(results))
