@@ -1,0 +1,34 @@
+{
+  "name": "loanreminder",
+  "version": "1.0.0",
+  "description": "Simple Loan Tracker with reminders and history",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "server": "node server/server.js",
+    "client": "npm start --prefix client ",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "heroku-postbuild": "npm install --prefix client && npm run build --prefix client"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/buddyeorl/loantracker.git"
+  },
+  "keywords": [
+    "Reminder",
+    "Loans",
+    "Important",
+    "buddyeorl"
+  ],
+  "author": "Alex Lizarraga",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/buddyeorl/loantracker/issues"
+  },
+  "homepage": "https://github.com/buddyeorl/loantracker#readme",
+  "proxy": "http://localhost:3000",
+  "dependencies": {
+    "concurrently": "^5.0.0",
+    "nodemailer": "^6.3.1"
+  }
+}
