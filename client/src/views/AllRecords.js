@@ -86,7 +86,7 @@ class AllRecords extends React.Component {
             <Table className={classes.table} aria-label="simple table">
                 <TableHead>
                     <TableRow>
-                        <TableCell >{this.props.whichRecord}</TableCell>
+                        <TableCell >Contract :{this.props.whichRecord}</TableCell>
                         <TableCell >Memo</TableCell>
                         <TableCell >Amount</TableCell>
                         <TableCell >Balance</TableCell>

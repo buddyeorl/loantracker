@@ -111,13 +111,42 @@ class AllContracts extends React.Component {
     return await response.json(); // parses JSON response into native JavaScript objects
   }
 
-  updateContractData = async (event, contract, balance, change, type) => {
+  updateContractData = async (event, contract, balance, change, type,financed,monthly,originalFinanced,originalMonthly) => {
 
     event.preventDefault();
 
     console.log('Updating Conctract Data')
+    event.preventDefault();
+    if (change === ''){
+        change=0
+    }
+    if (financed === ''){
+        financed =originalFinanced
+    }
+    if (monthly === ''){
+        monthly =originalMonthly
+    }
+    if (type==''){
+        type='No memo provided'
+    }
     // Default options are marked with *
-    const response = await fetch('/api/updateContract?contract=' + contract + '&balance=' + balance + '&change=' + change + '&type=' + type, {
+    const response = await fetch('/api/updateContract?contract=' + contract + '&balance=' + balance + '&change=' + change + '&type=' + type+ '&financed=' + financed+ '&monthly=' + monthly, {
+      method: 'POST', // *GET, POST, PUT, DELETE, etc.
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+    })
+    this.getData('/api/all').then(response1 => this.props.showAll(response1))
+    return await response.json(); // parses JSON response into native JavaScript objects
+  }
+
+  removeContractData = async (event, contract) => {
+    event.preventDefault();
+    console.log('Updating Conctract Data')
+
+    // Default options are marked with *
+    const response = await fetch('/api/removeContract?contract=' + contract , {
       method: 'POST', // *GET, POST, PUT, DELETE, etc.
       headers: {
         'Accept': 'application/json',
@@ -248,7 +277,9 @@ class AllContracts extends React.Component {
                   <TableCell >Starting Date</TableCell>
                   <TableCell >Next Payment</TableCell>
                   <TableCell >Pay</TableCell>
+                  <TableCell >History</TableCell>
                   <TableCell >Edit</TableCell>
+                  <TableCell >Remove</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -267,6 +298,7 @@ class AllContracts extends React.Component {
                   getData={this.getData}
                   updateData={this.updateData}
                   updateContractData={this.updateContractData}
+                  removeContractData={this.removeContractData}
                   showRecord={this.showRecord}
                   />
                   

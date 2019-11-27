@@ -23,7 +23,7 @@ app.get('/api/all', (req, res) => {
 
 app.get('/api/allRecords', (req, res) => {
     console.log('getting all')
-    History.findAll({where:{loanContract:req.query.loanContract}}).then(results => res.send(results))
+    History.findAll({ where: { loanContract: req.query.loanContract } }).then(results => res.send(results))
 })
 
 app.post('/api/update', (req, res) => {
@@ -44,24 +44,38 @@ app.post('/api/update', (req, res) => {
             monthly: (req.query.balance === '0') ? 0 : req.query.monthly
         },
         { where: { contract: req.query.contract } }
-    //).then((rowsUpdated) => {
+        //).then((rowsUpdated) => {
         // res.send(
         //     rowsUpdated
         // )
-    ).then(()=>
-    History.create({
-        type:'payment',
-        amountPaid:-req.query.monthly,
-        balance:req.query.balance,
-        loanContract:req.query.contract
-    }).then((results) => {
-        console.log("finish adding new loan")
-        res.send(
-            results.toJSON()
-        )
-    })
+    ).then(() =>
+        History.create({
+            type: 'payment',
+            amountPaid: -req.query.monthly,
+            balance: req.query.balance,
+            loanContract: req.query.contract
+        }).then((results) => {
+            console.log("finish adding new loan")
+            res.send(
+                results.toJSON()
+            )
+        })
     )
 
+})
+
+app.post('/api/removeContract', (req, res) => {
+    Loan.destroy({
+        where: {
+           contract:req.query.contract
+        }
+    }).then(response =>{
+        History.destroy({
+            where: {
+               loanContract:req.query.contract
+            }
+        }).then(response=> res.send({ message: 'Delete Contract Record' }))
+    })  
 })
 
 
@@ -69,34 +83,48 @@ app.post('/api/updateContract', (req, res) => {
     console.log('updating contract')
     console.log(JSON.stringify(req.query.next))
     console.log(req.query.contract)
+    console.log(req.query.change)
+    console.log(req.query.balance)
+    console.log(parseInt(req.query.balance) + parseInt(req.query.change))
     if (req.query.balance < 0) {
         console.log('sending error')
         res.send({ error: 'cant pay already paid Loan' })
         return
     }
+    let newBalance = parseInt(req.query.balance) + parseInt(req.query.change)
     console.log('no error')
-    console.log(parseInt(req.query.balance)+parseInt(req.query.change))
+    console.log(req.query.financed)
     Loan.update(
         {
-            balance: parseInt(req.query.balance)+parseInt(req.query.change),
+            balance: newBalance,
+            financed: req.query.financed,
+            monthly: req.query.monthly
         },
         { where: { contract: req.query.contract } }
-    //).then((rowsUpdated) => {
+        //).then((rowsUpdated) => {
         // res.send(
         //     rowsUpdated
         // )
-    ).then(()=>
-    History.create({
-        type:req.query.type,
-        amountPaid:req.query.change,
-        balance:parseInt(req.query.balance)+parseInt(req.query.change),
-        loanContract:req.query.contract
-    }).then((results) => {
-        console.log("finish adding new loan")
-        res.send(
-            results.toJSON()
-        )
-    })
+    ).then(() => {
+        if (req.query.change === '0') {
+            res.send({ error: 'cant pay already paid Loan' })
+            return
+        } else {
+
+            History.create({
+                type: req.query.type,
+                amountPaid: req.query.change,
+                balance: newBalance,
+                loanContract: req.query.contract
+            }).then((results) => {
+                console.log("finish adding new loan")
+                res.send(
+                    results.toJSON()
+                )
+            })
+
+        }
+    }
     )
 
 })
